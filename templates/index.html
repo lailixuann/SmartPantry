@@ -1,0 +1,37 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
+    <title>Real-Time Object Detection</title>  
+</head>  
+<body>
+    <header>
+        <h1>Smart Pantry Live Detection</h1>
+    </header>
+
+    <div class="container flex-row">
+        <div class='video-wrapper'>
+            <div id="spinner">Loading camera...</div>
+            <div class="video-container" id="videoContainer">
+                <img id="cameraFeed" alt="Live Camera Feed">
+            </div>
+        </div>
+
+        <div class="btn-wrapper">
+            <button class="detection-btn" id="startBtn" onclick="startDetection()">Start Detection</button>
+            <button class="stop-btn" id="stopBtn" onclick="stopDetection()">Stop Detection</button>
+        </div>
+    </div>
+
+        
+    <div class="container">   
+        <div class="section-title">Items Detected
+        </div>
+        <div class="detection-list" id="detectionList"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>  
