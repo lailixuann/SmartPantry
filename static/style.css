@@ -93,7 +93,7 @@ header {
 }
 .detection-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, max(320px));
     gap: 1rem;
 }
 .detection-card {

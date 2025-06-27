@@ -10,7 +10,7 @@ function startDetection(){
             document.getElementById('cameraFeed').src = '/video';
             document.getElementById('cameraFeed').style.display = 'block';
             document.getElementById('videoContainer').style.display = 'block';
-        }, 1000);
+        }, 500);
 
         detectionStarted = true;
         document.getElementById('startBtn').disabled = true;
