@@ -20,7 +20,7 @@ with app.app_context():
     db.create_all() 
 
 # Load the YOLOv5 model
-model = torch.hub.load('./yolov5', 'custom', path = 'yolov5/best.pt', source='local') 
+model = torch.hub.load('./yolov5', 'custom', path = 'best.pt', source='local') 
 
 # Tracking ingredients state
 appearance_start_time = {}
@@ -68,10 +68,6 @@ def generate_frames():
     streaming = True
     cap = cv2.VideoCapture(0)
 
-    # last_detection_time = 0
-    # detection_interval = 1.0  # detect every 1s
-    # MIN_PERSISTENCE_DURATION = 1.5
-
     try:
         while streaming:
             success, frame = cap.read()
@@ -84,23 +80,14 @@ def generate_frames():
             current_detections = set()
             confident_detections = []
 
-            # if current_time - last_detection_time >= detection_interval:
-            #     last_detection_time = current_time
-
             rgb_frame = frame[..., ::-1]
             results = model(rgb_frame)
             detections = results.xyxy[0]
-        ###
-            # current_frame_classes = []
-        ###
 
             for *xyxy, conf, cls in detections:
                 class_name = model.names[int(cls)]
                 confidence = float(conf)
-            ###
-                # current_frame_classes.append(class_name)
-            ###
-                # Track when class first appeared
+
                 if class_name not in appearance_start_time:
                     appearance_start_time[class_name] = current_time
                 else:
