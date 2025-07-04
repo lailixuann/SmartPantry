@@ -20,16 +20,44 @@
         </div>
 
         <div class="btn-wrapper">
-            <button class="detection-btn" id="startBtn" onclick="startDetection()">Start Detection</button>
+            <button class="start-btn" id="startBtn" onclick="startDetection()">Start Detection</button>
             <button class="stop-btn" id="stopBtn" onclick="stopDetection()">Stop Detection</button>
         </div>
     </div>
 
         
     <div class="container">   
-        <div class="section-title">Items Detected
-        </div>
+        <div class="section-title">Items Detected</div>
+
         <div class="detection-list" id="detectionList"></div>
+        <button class=" start-btn generate-btn" id="generateBtn" onclick="generateRecipes()">Generate Recipes</div>
+    </div>
+
+    <div class="container hide" id="Recipes">
+        <div class="section-title">Recipes Suggestions
+            <button class="refresh-btn" id="refreshBtn" onclick="generateRecipes()">
+                <img src="{{ url_for('static', filename='refresh.svg') }}" alt="Refresh" >
+            </button>
+        </div>
+        <div class="detection-list" id="recipeList"></div>
+    </div>
+
+    <div id="popup" class="popup" style="display: none;">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <h2 id="popup-title"></h2>
+            <div class="popup-scrollable">
+                <h3>Description</h3>
+                <p id="popup-description"></p>
+
+                <h3>Ingredients</h3>
+                <ul id="popup-ingredients"></ul>
+
+                <h3>Steps</h3>
+                <ol id="popup-steps"></ol>
+            </div>
+
+        </div>
     </div>
 
     <script src="/static/script.js"></script>
