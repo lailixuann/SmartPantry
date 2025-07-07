@@ -65,4 +65,4 @@ def recommend_recipes(pantry_items):
      )
 
     results = query.all()
-    return [(r, m, t) for r, m, t in results if m is not None and m > 0]
+    return [(r, m) for r, m in results if m is not None and m > 0]
