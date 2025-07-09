@@ -36,9 +36,10 @@ header {
     margin-bottom: 2rem;
 }
 .video-container {
-    width: 640px;
-    height: 480px;
+    width: 100%;
+    height: 100%;
     text-align: left;
+    border-radius: 10px;
     display: none;
 }
 .video-container img {
@@ -47,12 +48,23 @@ header {
     height: 100%;
     border-radius: 10px;
     object-fit: cover;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: transparent;
+}
+
+#cameraFeed.flash {
+  animation: flashEffect 0.15s ease;
+}
+
+@keyframes flashEffect {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(2); }
+  100% { filter: brightness(1); }
 }
 
 .btn-wrapper {
     display: flex;
     flex-direction: column;
+    /* gap: 1rem; */
 }
 .start-btn , .stop-btn {
     display: block;
@@ -108,6 +120,7 @@ header {
     display:none;
     position:absolute;
     font-size: 1.2rem;
+    /* z-index: 10; */
 }
 
 .section-title {
@@ -127,29 +140,34 @@ header {
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
 }
+.detection-card img {
+    width: 480px;
+    border-radius: 8px;
+}
 .detection-card:hover {
     transform: translateY(-5px);
     cursor: pointer;
 }
 .detection-card h3 {
-    margin: 0 0 0.5rem;
+    margin: 0.5rem 0 0.2rem;
     color: #333;
 }
 .detection-card span {
     font-size: 0.9rem;
     color: #555;
 }
-
 .popup {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: rgba(0,0,0,0.6);
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
-
+.popup img {
+    width: 600px;
+}
 body.no-scroll {
     overflow: hidden;
 }
@@ -175,10 +193,11 @@ body.no-scroll {
     flex-direction: column;
 }
 
+/* Scrollable container */
 .popup-scrollable {
     flex: 1;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 10px; /* space for scrollbar */
 }
 
 .popup-scrollable::-webkit-scrollbar {
@@ -211,4 +230,10 @@ body.no-scroll {
     font-size: 16px;
     font-weight: bold;
     color: #333;
+}
+
+#snapshot {
+  display: block;
+  max-width: 100%;
+  margin: auto;
 }

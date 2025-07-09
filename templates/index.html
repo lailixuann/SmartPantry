@@ -30,6 +30,11 @@
         <div class="section-title">Items Detected</div>
 
         <div class="detection-list" id="detectionList"></div>
+        <div id="snapshotPopup" class="popup">
+            <span class="close" onclick="closePopup('snapshotPopup')">&times;</span>
+            <img id="popupImage" src="" alt="Detected Snapshot">
+        </div>
+
         <button class=" start-btn generate-btn" id="generateBtn" onclick="generateRecipes()">Generate Recipes</div>
     </div>
 
@@ -44,7 +49,7 @@
 
     <div id="popup" class="popup" style="display: none;">
         <div class="popup-content">
-            <span class="close" onclick="closePopup()">&times;</span>
+            <span class="close" onclick="closePopup('popup')">&times;</span>
             <h2 id="popup-title"></h2>
             <div class="popup-scrollable">
                 <h3>Description</h3>
