@@ -1,20 +1,22 @@
-from flask import Flask, Response, jsonify, render_template  
+from flask import Flask, Response, jsonify, render_template 
+from flask_cors import CORS 
 import cv2  
 import torch  
-import numpy as np  
 import time
 from collections import defaultdict,deque
-from db_models import Detection, DetectionSession, Recipe, RecipeIngredient, db
 from datetime import datetime
 import base64
+from uuid import uuid4
+
 import sys
 import os
-sys.path.append(os.path.abspath('./yolov5'))  # Adjust path if needed
+sys.path.append(os.path.abspath('./yolov5'))
 from utils.augmentations import letterbox
-from uuid import uuid4
-from collections import defaultdict
+
+from db_models import Detection, DetectionSession, Recipe, RecipeIngredient, db
 
 app = Flask(__name__)  
+CORS(app)
 
 # Configure the MySQL database  
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://myuser:mypassword@localhost/object_detection_db'
@@ -24,11 +26,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app) 
 
 # Create the database tables  
-with app.app_context():  
+with app.app_context():
     db.create_all() 
 
 # Load the YOLOv5 model
-model = torch.hub.load('./yolov5', 'custom', path = 'yolov5n/best.pt', source='local') 
+try: 
+	model = torch.hub.load('./yolov5', 'custom', path = 'yolov5n/best.pt', source='local') 
+	print("Model load successfully")
+except Exception as e:
+	print("[ERROR] Failed to load model: ", e)
 
 confidence_history = defaultdict(lambda: deque(maxlen=5))
 last_seen = {}
@@ -39,6 +45,13 @@ detection_buffer = defaultdict(int)
 removal_buffer = defaultdict(int)
 
 DETECTION_THRESHOLD = 2
+cap = None
+
+def get_camera():
+	global cap
+	if cap is None or not cap.isOpened():
+		cap = cv2.VideoCapture(0)
+	return cap
 
 def update_confidence(cls, confidence):
     now = time.time()
@@ -84,12 +97,14 @@ def mark_removed(items):
 
 def generate(cap):
     global streaming
+    if not cap or not cap.isOpened():
+        return '[ERROR] Failed to access camera'
+
     while streaming:
         success, frame = cap.read()
         if not success:
             break
         frame = letterbox(frame,new_shape=(640,480))[0]
-        frame = cv2.flip(frame, 1)
         _, buffer = cv2.imencode('.jpg', frame)
         yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
     cap.release()
@@ -101,8 +116,10 @@ def index():
 @app.route('/video')  
 def video_feed():  
     global streaming 
+    cap = get_camera()
+    if cap is None: 
+        return '[ERROR] Failed to start camera', 500
     streaming = True
-    cap = cv2.VideoCapture(0)
     return Response(generate(cap), mimetype='multipart/x-mixed-replace; boundary=frame')  
 
 @app.route('/start-detection')
@@ -120,16 +137,17 @@ def start_detections():
 @app.route('/process-frame')
 def process_frame():
     global streaming, last_snapshot_info, detection_buffer, removal_buffer
-    cap = cv2.VideoCapture(0)
+    cap = get_camera()
 
+    if not streaming or not cap or not cap.isOpened():
+        return '[ERROR] Camera not accessible in /process-frame', 500
+    
     while streaming:
         ret, frame = cap.read()
-        cap.release()
 
-        if not ret:
-            return 'Camera error', 500
+        if not ret or frame is None:
+            return '[ERROR] Failed to read frame', 500
 
-        frame = cv2.flip(frame, 1)
         frame = letterbox(frame,new_shape=(640,480))[0]
         rgb = frame[..., ::-1]
 
@@ -141,7 +159,7 @@ def process_frame():
         seen_classes = set()
 
         for *xyxy, conf, cls in detections:
-            if conf > 0.45:
+            if conf > 0.5:
                 class_name = model.names[int(cls)]
                 seen_classes.add(class_name)
 
@@ -175,7 +193,7 @@ def process_frame():
                     mark_removed([item])
                     detection_buffer[item] = 0
             else:
-                removal_buffer[item] = 0  # reset if detected again
+                removal_buffer[item] = 0
 
         _, buffer = cv2.imencode('.jpg', frame)
         img_base64 = base64.b64encode(buffer).decode('utf-8')
@@ -195,6 +213,10 @@ def snapshot_info():
 def stop_detection():
     global streaming, current_session_id 
     streaming = False
+    cap = get_camera()
+    if cap:
+        cap.release()
+        cap = None
     with app.app_context():
             session = db.session.get(DetectionSession, current_session_id)
             if session:
@@ -230,4 +252,4 @@ def get_recipe_details(recipe_id):
 
 
 if __name__ == '__main__':  
-    app.run(debug=True)  
+    app.run(debug=True, use_reloader=False)  
