@@ -19,7 +19,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Configure the MySQL database  
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://myuser:mypassword@localhost/object_detection_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myuser:mypassword@localhost/object_detection_db'
 print("Connected to:", app.config['SQLALCHEMY_DATABASE_URI'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  
 
@@ -71,6 +71,7 @@ def is_currently_detected(cls, threshold=0.5, timeout=5):
 def get_items():
     with app.app_context():
         items = db.session.query(Detection.class_name).filter_by(is_removed=False).all()
+        print("Database items:", items)
     return set(item[0] for item in items)
 
 def update_db(item_name, confidence, image_path):
@@ -161,6 +162,7 @@ def process_frame():
         for *xyxy, conf, cls in detections:
             if conf > 0.5:
                 class_name = model.names[int(cls)]
+                print(f"Detected class: {class_name}, confidence: {conf}")
                 seen_classes.add(class_name)
 
                 label = f"{class_name} ({int(conf * 100)}%)"
@@ -213,10 +215,6 @@ def snapshot_info():
 def stop_detection():
     global streaming, current_session_id 
     streaming = False
-    cap = get_camera()
-    if cap:
-        cap.release()
-        cap = None
     with app.app_context():
             session = db.session.get(DetectionSession, current_session_id)
             if session:
@@ -228,7 +226,8 @@ def stop_detection():
 @app.route('/generate-recipes')
 def generate_recipe():
     from recipe_recommendation import recommend_recipes
-    recipes = recommend_recipes(get_items())
+    pantry_items = get_items()
+    recipes = recommend_recipes(pantry_items)
     return jsonify([
         {
             "id": recipe.id,

@@ -8,11 +8,3 @@ GRANT ALL PRIVILEGES ON `object_detection_db`.* TO `myuser`@`localhost`;
 FLUSH PRIVILEGES;
 
 USE object_detection_db;
-
-CREATE TABLE IF NOT EXISTS detections (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    class_name VARCHAR(50),
-    confidence FLOAT,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_removed BOOLEAN DEFAULT TRUE
-);
