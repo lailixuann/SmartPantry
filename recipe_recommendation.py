@@ -31,10 +31,8 @@ def expand_ingredient(pantry_items):
     return expanded
 
 def recommend_recipes(pantry_items):
-    # pantry_items = db.session.query(Detection.class_name).filter_by(is_removed = False).all()
     pantry_items = [item for item in pantry_items]
 
-    # pantry_items = [item for item in pantry_items if item and item.lower() in ingredients_dict]
     if not pantry_items:
         print("No valid ingredients found in pantry")
         return []
@@ -52,22 +50,24 @@ def recommend_recipes(pantry_items):
         RecipeIngredient.recipe_id
     ).subquery()
 
-    query = db.session.query(
-        Recipe,
-        matched_counts.c.matched
-        ).join(
-           RecipeIngredient, Recipe.id == RecipeIngredient.recipe_id
-        ).outerjoin(
-           matched_counts, Recipe.id == matched_counts.c.recipe_id
-        ).group_by(
-            Recipe.id, matched_counts.c.matched
-        ).order_by(
-         db.case(
-             (matched_counts.c.matched == None, 1),
-             else_ = 0
-         ),
-        matched_counts.c.matched.desc()
-     )
 
-    results = query.all()
-    return [(r, m) for r, m in results if m is not None and m > 0]
+    query = db.session.query(
+            Recipe,
+            matched_counts.c.matched
+            ).join(
+            RecipeIngredient, Recipe.id == RecipeIngredient.recipe_id
+            ).outerjoin(
+            matched_counts, Recipe.id == matched_counts.c.recipe_id
+            ).group_by(
+                Recipe.id, matched_counts.c.matched
+            ).order_by(
+            db.case(
+                (matched_counts.c.matched == None, 1),
+                else_ = 0
+            ),
+            matched_counts.c.matched.desc()
+        )
+
+    results = query.filter(matched_counts.c.matched > 0).all()
+    print("Matched recipe results:", results)
+    return [(r, m) for r, m in results]

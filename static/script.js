@@ -37,12 +37,11 @@ function stopDetection() {
     
     const container = document.getElementById('detection-info');
     const lastInfo = document.createElement('div');
-    // lastInfo.textContent = "(Last detection results)";
     lastInfo.style.fontStyle = 'italic';
     container.appendChild(lastInfo);
 }
 
-const detectionHistory = []; // To store last 3 snapshot data
+const detectionHistory = []; 
 
 function fetchSnapshot() {
     triggerSnapshotEffect();
@@ -52,11 +51,9 @@ function fetchSnapshot() {
     .then(data => {
         const list = document.getElementById('detectionList');
 
-        // Store the latest detection result
-        detectionHistory.unshift(data); // Add to the beginning
-        if (detectionHistory.length > 3) detectionHistory.pop(); // Keep only last 3
+        detectionHistory.unshift(data); 
+        if (detectionHistory.length > 3) detectionHistory.pop();
 
-        // Clear current list and re-render from detectionHistory
         list.innerHTML = '';
 
         detectionHistory.forEach(snapshot => {
@@ -64,7 +61,6 @@ function fetchSnapshot() {
             card.className = 'detection-card';
 
             let snapshotImg = '';
-            // Add snapshot image
             if (snapshot.image) {
                 const img = document.createElement('img');
                 snapshotImg = 'data:image/jpeg;base64,' + snapshot.image;
@@ -75,7 +71,6 @@ function fetchSnapshot() {
                 card.appendChild(img);
             }
 
-            // Add detection info
             const content = document.createElement('div');
             if (snapshot.detections && snapshot.detections.length > 0) {
                 snapshot.detections.forEach(d => {
