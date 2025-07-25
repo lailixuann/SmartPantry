@@ -1,11 +1,11 @@
-'''run once only to import recipes into database'''
+# run once only to import recipes into database
+
 from db_models import db, Recipe, RecipeIngredient
 import csv
-from app import app
 import json
 
-with open('final_recipes.csv', newline='', encoding='utf-8') as f:
-    with app.app_context():
+def insert_recipes_to_db():
+    with open('final_recipes.csv', newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
             steps = row['steps']

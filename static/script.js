@@ -107,8 +107,12 @@ function fetchSnapshot() {
             })
             list.appendChild(card);
         })
-        const hasDetections = detectionHistory.some(s => s.detections && s.detections.length > 0);
-        document.getElementById('generateBtn').style.display = hasDetections ? 'block' : 'none';
+        fetch('/active-items')
+        .then(res => res.json())
+        .then(data => {
+            const hasItems = data.has_items;
+            document.getElementById('generateBtn').style.display = hasItems ? 'block' : 'none';
+        });
     })
     .catch(err => {
         console.error("Snapshot fetch error:", err);

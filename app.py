@@ -14,11 +14,12 @@ sys.path.append(os.path.abspath('./yolov5'))
 from utils.augmentations import letterbox
 
 from db_models import Detection, DetectionSession, Recipe, RecipeIngredient, db
+from insert_recipes import insert_recipes_to_db
 
 app = Flask(__name__)  
 CORS(app)
 
-# Configure the MySQL database  
+# Configure the MariaDB database  
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myuser:mypassword@localhost/object_detection_db'
 print("Connected to:", app.config['SQLALCHEMY_DATABASE_URI'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  
@@ -28,6 +29,10 @@ db.init_app(app)
 # Create the database tables  
 with app.app_context():
     db.create_all() 
+
+    if Recipe.query.count() == 0:
+        print("No recipes found — inserting default recipes...")
+        insert_recipes_to_db()
 
 # Load the YOLOv5 model
 try: 
@@ -222,6 +227,11 @@ def stop_detection():
                 db.session.commit()
     current_session_id = None
     return 'Detection session stopped'
+
+@app.route("/active-items")
+def has_active_items():
+    items = get_items()
+    return jsonify({"has_items": len(items) > 0})
 
 @app.route('/generate-recipes')
 def generate_recipe():

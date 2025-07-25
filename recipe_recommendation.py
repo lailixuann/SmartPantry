@@ -32,7 +32,7 @@ def expand_ingredient(pantry_items):
 
 def recommend_recipes(pantry_items):
     # pantry_items = db.session.query(Detection.class_name).filter_by(is_removed = False).all()
-    pantry_items = [item[0] for item in pantry_items]
+    pantry_items = [item for item in pantry_items]
 
     # pantry_items = [item for item in pantry_items if item and item.lower() in ingredients_dict]
     if not pantry_items:
