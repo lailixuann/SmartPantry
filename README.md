@@ -1,4 +1,4 @@
-# 🤖 SmartPantry: Low-Cost Edge Deploymenr of a Grocery Monitoring & Malaysian Recipe Recommendation System
+# 🤖 SmartPantry: Low-Cost Edge Deployment of a Grocery Monitoring & Malaysian Recipe Recommendation System
 
 An intelligent pantry management system that uses YOLOv5 object detection to track pantry inventory and suggest recipes based on available ingredients, all running on a Raspberry Pi. This project was developed as a proof-of-concept to demonstrate the feasibility of using lightweight AI on edge devices to help reduce household food waste, aligning with UN Sustainable Development Goal 12.
 
