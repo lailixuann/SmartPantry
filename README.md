@@ -1,6 +1,6 @@
-# 🤖 SmartPantry: AI-Driven Recipe Recommendation and Grocery Management
+# 🤖 SmartPantry: Low-Cost Edge Deployment of a Grocery Monitoring & Malaysian Recipe Recommendation System
 
-An intelligent pantry management system that uses YOLOv5 object detection to track your inventory and suggest recipes, all running on a Raspberry Pi. This project was developed as a proof-of-concept to demonstrate the feasibility of using lightweight AI on edge devices to help reduce household food waste, aligning with UN Sustainable Development Goal 12.
+An intelligent pantry management system that uses YOLOv5 object detection to track pantry inventory and suggest recipes based on available ingredients, all running on a Raspberry Pi. This project was developed as a proof-of-concept to demonstrate the feasibility of using lightweight AI on edge devices to help reduce household food waste, aligning with UN Sustainable Development Goal 12.
 
 <!-- INSERT A GIF OR SCREENSHOT OF THE SYSTEM IN ACTION HERE -->
 <!-- Example: <p align="center"><img src="docs/demo.gif" width="700"></p> -->
@@ -17,7 +17,6 @@ The entire application is designed to be lightweight and is deployed on a **Rasp
 
 
 ## ✨ Features
-
 *   **Real-Time Object Detection:** Utilizes a lightweight YOLOv5n model for fast and accurate detection of 16 pantry item classes.
 *   **Automated Inventory Tracking:** The system automatically updates the inventory when items are added or removed, using a stabilization buffer to prevent flickering.
 *   **Historical Logging:** A "soft delete" (`is_removed`) flag in the database maintains a history of all items that have been in the pantry.
@@ -28,9 +27,7 @@ The entire application is designed to be lightweight and is deployed on a **Rasp
 
 
 ## 🛠️ Technology Stack
-
 This project was built with the following key technologies:
-
 *   **Python 3**
 *   **AI / Computer Vision:**
     *   **PyTorch**
@@ -118,7 +115,6 @@ Follow these steps to set up and run the project locally or on your Raspberry Pi
 
 
 ## 📖 Usage
-
 1.  Open your web browser and navigate to the application URL.
 2.  Click **"Start Detection"** to begin the real-time camera feed and object detection.
 3.  Place pantry items in front of the camera. The "Current Pantry" list will update automatically.
@@ -130,7 +126,6 @@ Follow these steps to set up and run the project locally or on your Raspberry Pi
 ## 🛣️ Future Work
 
 This proof-of-concept provides a strong foundation for many exciting future enhancements:
-
 *   **Quantity Counting:** Implement algorithms to count the number of instances of each item.
 *   **Expiry Date Recognition:** Integrate an OCR module to read expiry dates from packaging.
 *   **AI-Powered Recommendations:** Use NLP to provide personalized recipe suggestions based on dietary needs.
@@ -138,14 +133,7 @@ This proof-of-concept provides a strong foundation for many exciting future enha
 
 
 
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-
-
 ## 📧 Contact
 
 Lai Li Xuan - [@lailixuann](https://github.com/lailixuann)
-
 Project Link: [https://github.com/lailixuann/SmartPantry](https://github.com/lailixuann/SmartPantry)
