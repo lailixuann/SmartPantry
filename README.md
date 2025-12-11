@@ -3,7 +3,7 @@
 An intelligent pantry management system that uses YOLOv5 object detection to track pantry inventory and suggest recipes based on available ingredients, all running on a Raspberry Pi. This project was developed as a proof-of-concept to demonstrate the feasibility of using lightweight AI on edge devices to help reduce household food waste, aligning with UN Sustainable Development Goal 12.
 
 <!-- INSERT A GIF OR SCREENSHOT OF THE SYSTEM IN ACTION HERE -->
-<!-- Example: <p align="center"><img src="docs/demo.gif" width="700"></p> -->
+<p align="center"><img src="Demo.gif" width="700"></p>
 
 
 ## 🌟 About The Project
